@@ -13,7 +13,7 @@ eu_ch_support_country_list = ["AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "E
 max_cpuclock      = 1         # Set Max CPU Clock : 0(off) or 1(on)
 ##################################################################################
 # Firmware Conf.
-model             = 7394      # 7292/7394
+model             = 7292      # 7292/7394
 fw_download       = 1         # 0(FW Download off) or 1(FW Download on)
 fw_name           = 'uni_s1g.bin'
 ##################################################################################
@@ -55,7 +55,7 @@ ch347_usb_spi = 0             # wch ch347 usb-spi bridge
 #################################################################################
 # RF Conf.
 max_txpwr         = 24       # Maximum TX Power (in dBm)
-bd_name           = ''       # board data name (bd defines max TX Power per CH/MCS/CC)
+bd_name           = 'nrc7292_bd.dat'       # board data name (bd defines max TX Power per CH/MCS/CC)
                              # specify your bd name here. If not, follow naming rules in strBDName()
 ##################################################################################
 # PHY Conf.
