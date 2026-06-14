@@ -5615,11 +5615,11 @@ int nrc_register_hw(struct nrc *nw)
 	 * workqueue that may run after hostapd has already started.
 	 * _sync_rtnl requires the caller to hold the RTNL lock. */
 	rtnl_lock();
-	ret = regulatory_set_wiphy_regd_sync_rtnl(hw->wiphy,
+	ret = regulatory_set_wiphy_regd_sync(hw->wiphy,
 		(struct ieee80211_regdomain *)&mac80211_regdom);
 	rtnl_unlock();
 	if (ret)
-		dev_warn(nw->dev, "regulatory_set_wiphy_regd_sync_rtnl failed (%d)\n", ret);
+		dev_warn(nw->dev, "regulatory_set_wiphy_regd_sync failed (%d)\n", ret);
 
 	dev_info(nw->dev, "registered network device %s\n", wiphy_name(hw->wiphy));
 
