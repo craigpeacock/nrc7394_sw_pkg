@@ -256,7 +256,7 @@ static void ap_max_idle_period_expire(struct timer_list *t)
 #if KERNEL_VERSION(4, 15, 0) > LINUX_VERSION_CODE
 	struct nrc_vif *i_vif = (struct nrc_vif *) data;
 #else
-	struct nrc_vif *i_vif = from_timer(i_vif, t, max_idle_timer);
+	struct nrc_vif *i_vif = timer_container_of(i_vif, t, max_idle_timer);
 #endif
 	struct nrc_sta *i_sta = NULL, *tmp = NULL;
 	unsigned long flags;
@@ -307,7 +307,7 @@ void ap_max_idle_timer_stop (struct nrc *nw, struct nrc_vif *i_vif)
 {
 	if(timer_pending(&i_vif->max_idle_timer)){
 		dev_info(nw->dev, "vif(%d) Stop AP bss_max_idle timer", i_vif->index);
-		del_timer_sync(&i_vif->max_idle_timer);
+		timer_delete_sync(&i_vif->max_idle_timer);
 	}
 }
 
@@ -329,7 +329,7 @@ static void sta_max_idle_period_expire(unsigned long data)
 #else
 static void sta_max_idle_period_expire(struct timer_list *t)
 {
-	struct nrc_vif *i_vif = from_timer(i_vif, t, max_idle_timer);
+	struct nrc_vif *i_vif = timer_container_of(i_vif, t, max_idle_timer);
 #endif
 	struct ieee80211_hw *hw = i_vif->nw->hw;
 	struct nrc_sta *i_sta = NULL, *tmp = NULL, *tmp_sta = NULL;
@@ -475,7 +475,7 @@ static int sta_h_bss_max_idle_period(struct ieee80211_hw *hw,
 		  i_sta->max_idle.period > 0) {
 			nrc_mac_dbg("STA(%pM) deauth. Delete bss_max_idle timer(%u)",
 				sta->addr,i_sta->max_idle.idle_period);
-			del_timer_sync(&i_vif->max_idle_timer);
+			timer_delete_sync(&i_vif->max_idle_timer);
 			i_sta->max_idle.idle_period = 0;
 		}
 		return 0;

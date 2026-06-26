@@ -382,7 +382,7 @@ void set_timer(struct nrc_ssp_priv *priv)
 #else
 static void priodic_call(struct timer_list *t)
 {
-	struct nrc_hif_ssp *hif = from_timer(hif, t,
+	struct nrc_hif_ssp *hif = timer_container_of(hif, t,
 			exp_timer);
 	struct nrc_ssp_priv *priv = hif->ssp->priv;
 
@@ -549,7 +549,7 @@ static int ssp_remove(struct spi_device *spi)
 	destroy_workqueue(priv->tx_wq);
 	spi_set_drvdata(spi, NULL);
 
-	del_timer(&hif->exp_timer);
+	timer_delete(&hif->exp_timer);
 
 	kfree(priv);
 	nrc_dbg(NRC_DBG_HIF, "-%s", __func__);

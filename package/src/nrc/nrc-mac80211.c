@@ -2073,8 +2073,8 @@ void nrc_mac_bss_info_changed(struct ieee80211_hw *hw,
 			spin_lock_bh(&nw->vif_lock);
 			if (!disable_cqm) {
 				nw->beacon_timeout = 0;
-				nrc_mac_dbg("del_timer in %s:%d", __FUNCTION__, __LINE__);
-				try_to_del_timer_sync(&nw->bcn_mon_timer);
+				nrc_mac_dbg("timer_delete in %s:%d", __FUNCTION__, __LINE__);
+				timer_delete_sync_try(&nw->bcn_mon_timer);
 				nw->is_bcn_timeout = false;
 			}
 			nw->associated_vif = NULL;
@@ -2967,7 +2967,7 @@ __nrc_mac_hw_scan(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		if (!disable_cqm) {
 			if (disable_cqm_on_scan) {
 				nrc_mac_dbg("%s CQM timer off %u", __func__, nw->beacon_timeout);
-				try_to_del_timer_sync(&nw->bcn_mon_timer);
+				timer_delete_sync_try(&nw->bcn_mon_timer);
 			}
 		}
 
@@ -2975,7 +2975,7 @@ __nrc_mac_hw_scan(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			if (nw->drv_state >= NRC_DRV_RUNNING &&
 				nw->hw->conf.dynamic_ps_timeout > 0) {
 				nrc_mac_dbg("%s PS timer off %ul", __func__, nw->hw->conf.dynamic_ps_timeout);
-				try_to_del_timer_sync(&nw->dynamic_ps_timer);
+				timer_delete_sync_try(&nw->dynamic_ps_timer);
 			}
 		}
 	}
@@ -3856,7 +3856,7 @@ static int nrc_mac_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowl
 #endif
 
 	if (!disable_cqm) {
-		try_to_del_timer_sync(&nw->bcn_mon_timer);
+		timer_delete_sync_try(&nw->bcn_mon_timer);
 	}
 
 	nrc_hif_sleep_target_start(nw->hif, NRC_PS_DEEPSLEEP_NONTIM);
@@ -5261,7 +5261,7 @@ void nrc_bcn_mon_timer(unsigned long data)
 #else
 void nrc_bcn_mon_timer(struct timer_list *t)
 {
-	struct nrc *nw = from_timer(nw, t, bcn_mon_timer);
+	struct nrc *nw = timer_container_of(nw, t, bcn_mon_timer);
 #endif
 	//nrc_mac_dbg("[%s,L%d]", __func__, __LINE__);
 	if (nw->drv_state == NRC_DRV_PS) {
@@ -5292,7 +5292,7 @@ static void nrc_ps_timeout_timer(unsigned long data)
 #else
 static void nrc_ps_timeout_timer(struct timer_list *t)
 {
-	struct nrc *nw = from_timer(nw, t, dynamic_ps_timer);
+	struct nrc *nw = timer_container_of(nw, t, dynamic_ps_timer);
 #endif
 	struct nrc_hif_device *hdev = nw->hif;
 
@@ -5638,7 +5638,7 @@ void nrc_unregister_hw(struct nrc *nw)
 	nrc_hif_cleanup(nw->hif); 
 
 	if (ieee80211_hw_check(nw->hw, SUPPORTS_DYNAMIC_PS)) {
-		del_timer(&nw->dynamic_ps_timer);
+		timer_delete(&nw->dynamic_ps_timer);
 	}
 }
 

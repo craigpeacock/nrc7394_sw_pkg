@@ -51,7 +51,7 @@ int nrc_ps_set_mode (struct nrc *nw, enum NRC_PS_MODE mode, int timeout)
 		goto done;
 
 	if (!disable_cqm) {
-		try_to_del_timer_sync(&nw->bcn_mon_timer);
+		timer_delete_sync_try(&nw->bcn_mon_timer);
 	}
 
 	ieee80211_stop_queues(hw);
