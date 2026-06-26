@@ -638,8 +638,7 @@ struct nrc_twt_sched *nrc_twt_sched_init (struct nrc *nw, u64 sp, u32 num, u64 i
 
 	twt_sched->entries = entries;
 
-	hrtimer_init(&twt_sched->timer, CLOCK_BOOTTIME, HRTIMER_MODE_REL);
-	twt_sched->timer.function = twt_sched_timer_handler;
+	hrtimer_setup(&twt_sched->timer, twt_sched_timer_handler, CLOCK_BOOTTIME, HRTIMER_MODE_REL);
 
 	twt_sched->get_tsf_wq = alloc_workqueue("get_tsf_wq", WQ_HIGHPRI, 0);
 	if (twt_sched->get_tsf_wq == NULL) {
