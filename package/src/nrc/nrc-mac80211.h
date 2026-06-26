@@ -160,4 +160,7 @@ void nrc_cleanup_ba_session_all (struct nrc *nw);
 
 int nrc_mac_restart (struct nrc *nw);
 
+static int nrc_mac_set_rts_threshold(struct ieee80211_hw *hw, int radio_idx, u32 value);
+static int nrc_set_frag_threshold(struct ieee80211_hw *hw, int radio_idx, u32 value);
+
 #endif
